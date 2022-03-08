@@ -6,7 +6,6 @@ typedef Eigen::Matrix<double, Eigen::Dynamic, 1> cvec;
 typedef Eigen::Matrix<double, 1, Eigen::Dynamic> rvec;
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> mat;
 
-cvec leastSquares(mat X, cvec y);
 cvec leastSquares(cvec x, cvec y, rvec (*phi) (double));
 rvec phi(double x);
 
@@ -18,18 +17,12 @@ int main()
 	return 0;
 }
 
-cvec leastSquares(mat X, cvec y)
-{
-	return (X.transpose() * X).inverse() * X.transpose() * y;
-}
-
 cvec leastSquares(cvec x, cvec y, rvec (*phi) (double))
 {
 	mat X(x.size(), 1);
-	for (int i = 0; i < x.size(); i++) {
+	for (int i = 0; i < x.size(); i++)
 		X.row(i) = phi(x[i]);
-	}
-	return leastSquares(X, y);
+	return (X.transpose() * X).inverse() * X.transpose() * y;
 }
 
 rvec phi(double x)
