@@ -2,17 +2,39 @@
 #include <iostream>
 #include <Eigen/Dense>
 
-typedef Eigen::Matrix<double, Eigen::Dynamic, 1> vec;
+typedef Eigen::Matrix<double, Eigen::Dynamic, 1> cvec;
+typedef Eigen::Matrix<double, 1, Eigen::Dynamic> rvec;
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> mat;
 
-vec leastSquares(mat X, vec y, vec beta);
+cvec leastSquares(mat X, cvec y);
+cvec leastSquares(cvec x, cvec y, rvec (*phi) (double));
+rvec phi(double x);
 
 int main()
 {
+	cvec x{{1, 2, 3, 4, 5}};
+	cvec y{{2, 4, 6, 8, 10}};
+	std::cout << leastSquares(x, y, &phi);
 	return 0;
 }
 
-vec leastSquares(mat X, vec y, vec beta)
+cvec leastSquares(mat X, cvec y)
 {
 	return (X.transpose() * X).inverse() * X.transpose() * y;
+}
+
+cvec leastSquares(cvec x, cvec y, rvec (*phi) (double))
+{
+	mat X(x.size(), 1);
+	for (int i = 0; i < x.size(); i++) {
+		X.row(i) = phi(x[i]);
+	}
+	return leastSquares(X, y);
+}
+
+rvec phi(double x)
+{
+	rvec c(1);
+	c << x;
+	return c;
 }
