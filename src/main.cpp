@@ -19,7 +19,7 @@ int main()
 
 cvec leastSquares(cvec x, cvec y, rvec (*phi) (double))
 {
-	mat X(x.size(), 1);
+	mat X(x.size(), phi(0).size());
 	for (int i = 0; i < x.size(); i++)
 		X.row(i) = phi(x[i]);
 	return (X.transpose() * X).inverse() * X.transpose() * y;
@@ -27,7 +27,6 @@ cvec leastSquares(cvec x, cvec y, rvec (*phi) (double))
 
 rvec phi(double x)
 {
-	rvec c(1);
-	c << x;
+	rvec c{{x}};
 	return c;
 }
